@@ -3,6 +3,10 @@ package mflix.api.daos;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.*;
+
+import static com.mongodb.client.model.Filters.*;
+// import static com.mongodb.client.model.Projections.*;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -118,11 +122,18 @@ public class MovieDao extends AbstractMFlixDao {
    */
   public List<Document> getMoviesByCountry(String... country) {
 
-    Bson queryFilter = new Document();
+    // Bson queryFilter = new Document();
+    // using query builder from mongodb client
+    Bson queryFilter = in("countries", country);
     
-    Bson projection = new Document();
-    //TODO> Ticket: Projection - implement the query and projection required by the unit test
+    // Bson projection = new Document();
+    Bson projection = new Document("title", 1);
+    // TODO Ticket: Projection - implement the query and projection required by the unit test
     List<Document> movies = new ArrayList<>();
+    moviesCollection
+      .find(queryFilter)
+      .projection(projection)
+      .into(movies);
 
     return movies;
   }
