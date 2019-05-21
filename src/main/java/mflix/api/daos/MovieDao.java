@@ -32,7 +32,6 @@ public class MovieDao extends AbstractMFlixDao {
     moviesCollection = db.getCollection(MOVIES_COLLECTION);
   }
 
-  @SuppressWarnings("unchecked")
   private Bson buildLookupStage() {
     return null;
 
@@ -208,7 +207,12 @@ public class MovieDao extends AbstractMFlixDao {
     List<Document> movies = new ArrayList<>();
     // TODO > Ticket: Paging - implement the necessary cursor methods to support simple
     // pagination like skip and limit in the code below
-    moviesCollection.find(castFilter).sort(sort).iterator()
+    moviesCollection
+      .find(castFilter)
+      .sort(sort)
+      .limit(limit)
+      .skip(skip)
+      .iterator()
     .forEachRemaining(movies::add);
     return movies;
   }
@@ -230,7 +234,10 @@ public class MovieDao extends AbstractMFlixDao {
     ratingBoundaries.add(70);
     ratingBoundaries.add(90);
     ratingBoundaries.add(100);
+    
     return ratingBoundaries;
+    
+    
   }
 
   /**
